@@ -74,19 +74,72 @@ module Enumerable
     end
   end
 
+  # map with only a block given
   def my_map
     array3 = []
     i = 0
     while i < size
-      yield self[i]
-      array3 << self[i]
+      array3 << yield(self[i])
       i += 1
     end
     array3
   end
+
+  # map with only proc given
+  def my_map_1(&procedure)
+    array3 = []
+    i = 0
+    while i < size
+      array3 << procedure.call(self[i])
+      i += 1
+    end
+    array3
+  end
+
+  # map that accepts both a block and a proc
+  def my_map_2(&my_proc)
+    array3 = []
+    i = 0
+    while i < size
+      array3 << if block_given?
+          yield(self[i])
+        else
+          my_proc.call(self[i])
+        end
+      i += 1
+    end
+    array3
+  end
+
+  def my_inject(current = 0)
+    i = 0
+    accumulator = current
+    while i < size
+      accumulator = yield(accumulator, self[i])
+
+      i += 1
+    end
+    accumulator
+  end
+
+  # def my_inject *initial
+  #   memory = nil
+  #       array = self.to_a
+  #       if initial.size != 0
+  #           memory = initial
+  #       else
+  #           memory = array[0]
+  #           array.shift
+  #       end
+  #       array.length.times do |i|
+  #           memory = yield(memory, array[i])
+  #       end
+  #       memory
+  # end
 end
 
-array = [1, 2, 3, 4, 5, 5, 7, 8, 9, 10]
+def multiply_els(arr)
+  arr.my_inject { |i, j| i * j }
+end
 
-p array.count(5) #=> [1, 4, 9, 16]
-# (1..4).collect { "cat"  }
+p multiply_els([2, 4, 5])
