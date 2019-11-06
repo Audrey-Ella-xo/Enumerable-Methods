@@ -18,7 +18,7 @@ This project is done with an effort to learn  and understand ruby's Enumerable m
   - #map
   - #inject
 
-#### [Assignment Link](https://www.theodinproject.com/courses/ruby-programming/lessons/advanced-building-blocks)
+### [Assignment Link](https://www.theodinproject.com/courses/ruby-programming/lessons/advanced-building-blocks)
 
-#### Contributor:
+# Author
  * [Odiaka Emmanuella Anita](https://github.com/Audrey-Ella-xo)
