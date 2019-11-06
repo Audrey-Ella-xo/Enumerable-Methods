@@ -2,40 +2,31 @@
 # rubocop:disable all
 module Enumerable
   def my_each
-    if block_given?
-      i = 0
+    return to_enum unless block_given?
+    i = 0
       while i < size
         yield self[i]
         i += 1
       end
-    else
-      p 'No block given!'
-    end
   end
 
   def my_each_with_index
-    if block_given?
-      i = 0
+    return to_enum unless block_given?
+    i = 0
       while i < size
         yield(self[i], i)
         i += 1
       end
-    else
-      p 'No block given!'
-    end
   end
 
   def my_select
-    if block_given?
-      array2 = []
+    return to_enum unless block_given?
+    array2 = []
       i = 0
       while i < size
         array2 << self[i] if yield self[i]
         i += 1
       end
-    else
-      p 'No block given!'
-    end
     array2
   end
 
@@ -81,7 +72,7 @@ module Enumerable
     true
   end
 
-  def my_count(*arg)
+  def my_count(arg = '')
     if block_given? == false && arg == ''
       length
     elsif block_given? == false
@@ -91,6 +82,7 @@ module Enumerable
         count += 1 if self[i] == arg
         i += 1
       end
+        count
     else
       count = 0
       i = 0
@@ -98,43 +90,14 @@ module Enumerable
         count += 1 if yield self[i]
         i += 1
       end
+      count
     end
   end
-
-  # map with only a block given
-  def my_map
-    if block_given?
-      array3 = []
-      i = 0
-      while i < size
-        array3 << yield(self[i])
-        i += 1
-      end
-    else
-      p 'No block given!'
-    end
-    array3
-  end
-
-  # map with only proc given
-  def my_map_1(&procedure)
-    if block_given?
-      array3 = []
-      i = 0
-      while i < size
-        array3 << procedure.call(self[i])
-        i += 1
-      end
-    else
-      p 'No block given!'
-    end
-    array3
-  end
-
+  
   # map that accepts both a block and a proc
-  def my_map_2(&my_proc)
-    if block_given?
-      array3 = []
+  def my_map(&my_proc)
+    return to_enum unless block_given?
+    array3 = []
       i = 0
       while i < size
         array3 << if block_given?
@@ -144,24 +107,17 @@ module Enumerable
                   end
         i += 1
       end
-    else
-      'No block given!'
-    end
     array3
   end
 
   def my_inject(current = 0)
-    if block_given?
-      i = 0
+    i = 0
       accumulator = current
       while i < size
         accumulator = yield(accumulator, self[i])
 
         i += 1
       end
-    else
-      p 'No block given!'
-    end
     accumulator
   end
 end
@@ -233,37 +189,21 @@ puts "\n"
 print '-------my_count---------'
 puts "\n"
 ary = [1, 2, 4, 2]
-p ary.count
-p ary.count(2)
-p ary.count(&:even?)
+p ary.my_count # 4
+p ary.my_count(2) # 2
+p ary.my_count(&:even?) # 3
 puts "\n"
 print '-------------------'
 puts "\n"
 print '-------my_map methods---------'
 puts "\n"
-print '-------my_map with block---------'
-puts "\n"
-# rubocop:disable all
-p [1, 2, 3, 4].my_map { |i| i * i }
-p [1, 2, 3, 4].my_map { 'cat' }
-# rubocop:enable all
-puts "\n"
-print '-------------------'
-print '-------my_map with proc---------'
-puts "\n"
-my_proc = proc { |i| i * i }
-my_proce = proc { 'cat' }
-p [1, 2, 3, 4].my_map_1(&my_proc)
-p [1, 2, 3, 4].my_map_1(&my_proce)
-puts "\n"
-print '-------------------'
 print '-------my_map with proc or block---------'
 puts "\n"
 bloc = proc { 'cat' }
 # rubocop:disable all
-p [1, 2, 3, 4].my_map_2 { |i| i * i }
+p [1, 2, 3, 4].my_map { |i| i * i }
 # rubocop:enable all
-p [1, 2, 3, 4].my_map_2(&bloc)
+p [1, 2, 3, 4].my_map(&bloc)
 puts "\n"
 print '-------------------'
 puts "\n"
