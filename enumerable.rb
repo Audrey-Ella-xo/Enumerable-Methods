@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-
+# rubocop:disable all
 module Enumerable
   def my_each
     if block_given?
@@ -141,7 +141,7 @@ module Enumerable
                     yield(self[i])
                   else
                     my_proc.call(self[i])
-          end
+                  end
         i += 1
       end
     else
@@ -165,7 +165,7 @@ module Enumerable
     accumulator
   end
 end
-
+# rubocop:enable all
 def multiply_els(arr)
   arr.my_inject(1) { |i, j| i * j }
 end
@@ -197,28 +197,36 @@ puts "\n"
 print '-------my_select---------'
 puts "\n"
 p [1, 2, 3, 4, 5].my_select(&:even?)
+# rubocop:disable all
 p %i[foo bar].my_select { |x| x == :foo }
+# rubocop:enable all
 puts "\n"
 print '-------------------'
 puts "\n"
 print '-------my_all?---------'
 puts "\n"
+# rubocop:disable all
 p %w[ant bear cat].my_all? { |word| word.length >= 3 }
 p %w[ant bear cat].my_all? { |word| word.length >= 4 }
+# rubocop:enable all
 puts "\n"
 print '-------------------'
 puts "\n"
 print '-------my_any?---------'
 puts "\n"
+# rubocop:disable all
 p %w[ant bear cat].my_any? { |word| word.length >= 3 }
 p %w[ant bear cat].my_any? { |word| word.length >= 4 }
+# rubocop:enable all
 puts "\n"
 print '-------------------'
 puts "\n"
 print '-------my_none?---------'
 puts "\n"
+# rubocop:disable all
 p %w[ant bear cat].my_none? { |word| word.length == 5 }
 p %w[ant bear cat].my_none? { |word| word.length >= 4 }
+# rubocop:enable all
 puts "\n"
 print '-------------------'
 puts "\n"
@@ -235,8 +243,10 @@ print '-------my_map methods---------'
 puts "\n"
 print '-------my_map with block---------'
 puts "\n"
+# rubocop:disable all
 p [1, 2, 3, 4].my_map { |i| i * i }
 p [1, 2, 3, 4].my_map { 'cat' }
+# rubocop:enable all
 puts "\n"
 print '-------------------'
 print '-------my_map with proc---------'
@@ -250,7 +260,9 @@ print '-------------------'
 print '-------my_map with proc or block---------'
 puts "\n"
 bloc = proc { 'cat' }
+# rubocop:disable all
 p [1, 2, 3, 4].my_map_2 { |i| i * i }
+# rubocop:enable all
 p [1, 2, 3, 4].my_map_2(&bloc)
 puts "\n"
 print '-------------------'
@@ -259,7 +271,9 @@ print '-------------------'
 puts "\n"
 print '-------my_inject---------'
 puts "\n"
-p [5, 6, 7, 8, 9, 10].my_inject { |sum, n| sum + n } 
-p [5, 6, 7, 8, 9, 10].my_inject(1) { |product, n| product * n } 
+# rubocop:disable all
+p [5, 6, 7, 8, 9, 10].my_inject { |sum, n| sum + n }
+# rubocop:enable all
+p [5, 6, 7, 8, 9, 10].my_inject(1) { |product, n| product * n }
 puts "\n"
 print '-------------------'
