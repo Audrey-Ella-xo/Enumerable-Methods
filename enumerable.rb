@@ -30,46 +30,64 @@ module Enumerable
     array2
   end
 
-  def my_all?
-    if block_given?
-      i = 0
-      while i < size
-        return false unless yield self[i]
-
-        i += 1
-      end
+  def my_all?(pattern = nil)
+    test = true
+    if(block_given?)
+      self.my_each do |x|
+        test = test && yield(x)
+      end 
     else
-      p 'No block given!'
+      if(pattern.nil?)
+        self.my_each do |x|
+          test = test && (x==true)
+        end
+      else
+        self.my_each do |x|
+          test = test && (x.match?(pattern))
+        end
+      end
     end
-    true
+    return test
   end
 
-  def my_any?
-    if block_given?
-      i = 0
-      while i < size
-        return true if yield self[i]
-
-        i += 1
+  def my_any?(pattern = nil)
+    test = false
+    if(block_given?)
+      self.my_each do |x|
+        test = test || yield(x)
       end
     else
-      p 'No block given!'
+      if(pattern.nil?)
+        self.my_each do |x|
+          test = test || (x == true)
+        end
+      else
+        self.my_each do |x|
+          test = test || (x.match?(pattern))
+        end
+      end
     end
-    false
+    return test
   end
 
-  def my_none?
-    if block_given?
-      i = 0
-      while i < size
-        return false if yield self[i]
-
-        i += 1
+  def my_none?(pattern = nil)
+    test = true
+    if (block_given?)
+      self.my_each do |x|
+        test = test && !yield(x)
       end
     else
-      p 'No block given!'
+      if(pattern.nil?)
+        self.my_each do |x|
+          test = test && (x==false)
+        end
+      else
+        self.my_each do |x|
+          test = test && !x.match?(pattern)
+        end
+      end
     end
-    true
+    return test
   end
 
   def my_count(arg = '')
@@ -126,94 +144,3 @@ def multiply_els(arr)
   arr.my_inject(1) { |i, j| i * j }
 end
 
-print '-------------------'
-puts "\n"
-puts 'Start tests'
-puts "\n"
-print '-------odin inject test---------'
-puts "\n"
-p multiply_els([2, 4, 5])
-puts "\n"
-print '-------------------'
-puts "\n"
-print '-----Start enumerable tests------'
-puts "\n"
-print '-------my_each---------'
-puts "\n"
-[5, 3, 7, 300, 800].my_each { |x| p x }
-puts "\n"
-print '-------------------'
-puts "\n"
-print '-------my_each_with_index---------'
-puts "\n"
-[5, 3, 7, 300, 800].my_each_with_index { |x, y| p "#{x} => #{y}" }
-puts "\n"
-print '-------------------'
-puts "\n"
-print '-------my_select---------'
-puts "\n"
-p [1, 2, 3, 4, 5].my_select(&:even?)
-# rubocop:disable all
-p %i[foo bar].my_select { |x| x == :foo }
-# rubocop:enable all
-puts "\n"
-print '-------------------'
-puts "\n"
-print '-------my_all?---------'
-puts "\n"
-# rubocop:disable all
-p %w[ant bear cat].my_all? { |word| word.length >= 3 }
-p %w[ant bear cat].my_all? { |word| word.length >= 4 }
-# rubocop:enable all
-puts "\n"
-print '-------------------'
-puts "\n"
-print '-------my_any?---------'
-puts "\n"
-# rubocop:disable all
-p %w[ant bear cat].my_any? { |word| word.length >= 3 }
-p %w[ant bear cat].my_any? { |word| word.length >= 4 }
-# rubocop:enable all
-puts "\n"
-print '-------------------'
-puts "\n"
-print '-------my_none?---------'
-puts "\n"
-# rubocop:disable all
-p %w[ant bear cat].my_none? { |word| word.length == 5 }
-p %w[ant bear cat].my_none? { |word| word.length >= 4 }
-# rubocop:enable all
-puts "\n"
-print '-------------------'
-puts "\n"
-print '-------my_count---------'
-puts "\n"
-ary = [1, 2, 4, 2]
-p ary.my_count # 4
-p ary.my_count(2) # 2
-p ary.my_count(&:even?) # 3
-puts "\n"
-print '-------------------'
-puts "\n"
-print '-------my_map methods---------'
-puts "\n"
-print '-------my_map with proc or block---------'
-puts "\n"
-bloc = proc { 'cat' }
-# rubocop:disable all
-p [1, 2, 3, 4].my_map { |i| i * i }
-# rubocop:enable all
-p [1, 2, 3, 4].my_map(&bloc)
-puts "\n"
-print '-------------------'
-puts "\n"
-print '-------------------'
-puts "\n"
-print '-------my_inject---------'
-puts "\n"
-# rubocop:disable all
-p [5, 6, 7, 8, 9, 10].my_inject { |sum, n| sum + n }
-# rubocop:enable all
-p [5, 6, 7, 8, 9, 10].my_inject(1) { |product, n| product * n }
-puts "\n"
-print '-------------------'
