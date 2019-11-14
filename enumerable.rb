@@ -36,7 +36,7 @@ module Enumerable
     elsif arg.is_a? Regexp
       my_each { |element| return false unless arg =~ element }
     elsif arg.is_a? Class
-      my_each { |element| return false unless element.class == arg }
+      my_each { |element| return true unless element.class == arg }
     else
       my_each { |element| return false unless element }
     end
