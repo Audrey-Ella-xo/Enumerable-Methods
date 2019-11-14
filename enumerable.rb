@@ -30,40 +30,43 @@ module Enumerable
     array2
   end
 
-  def my_all
-    return true if !block_given?
-
-    i = 0
-    while i < size
-      return false if !yield(self[i])
-      i += 1
+  def my_all?(arg = nil)
+    if block_given?
+      my_each { |element| return false unless yield(element) }
+    elsif arg.is_a? Regexp
+      my_each { |element| return false unless arg =~ element }
+    elsif arg.is_a? Class
+      my_each { |element| return false unless element.class == arg }
+    else
+      my_each { |element| return false unless element }
     end
-
-    return true
+    true
   end
 
-  def my_any
-    return true if !block_given?
-
-    i = 0
-    while i < size
-      return true if yield(self[i])
-      i += 1
+  def my_any?(arg = nil)
+    if block_given?
+      my_each { |element| return true if yield(element) }
+    elsif arg.is_a? Regexp
+      my_each { |element| return true if arg =~ element }
+    elsif arg.is_a? Class
+      my_each { |element| return true if element.class == arg }
+    else
+      my_each { |element| return true if element }
     end
-
-    return false
+    false
   end
 
-  def my_none
-    return true if !block_given?
-
-    i = 0
-    while i < size
-      return false if yield(self[i])
-      i += 1
+  def my_none?(arg = nil)
+    if block_given?
+      my_each { |element| return false if yield(element) }
+    elsif arg.is_a? Regexp
+      my_each { |element| return false if arg =~ element }
+    elsif arg.is_a? Class
+      my_each { |element| return false if element.class == arg }
+    else
+      my_each { |element| return false if element }
     end
-
-    return true
+    true
   end
 
   def my_count(arg = '')
@@ -104,23 +107,19 @@ module Enumerable
     array3
   end
 
-  def my_inject(x = nil)
-    return nil if !block_given?
-
-    if !x.nil?
-      result = x
-      i = 0
+  def my_inject(init = nil, arg = nil)
+    result = self[0]
+    if block_given?
+      my_each_with_index do |element, i|
+        result = yield(result, element) unless i.zero?
+      end
     else
-      result = self[0]
-      i = 1
+      my_each_with_index do |element, i|
+        sym = init.is_a?(Symbol) ? init : arg
+        result = result.send(sym, element) unless i.zero?
+      end
     end
-
-    while i < size
-      result = yield(result, self[i])
-      i += 1
-    end
-
-    return result
+    result
   end
 
 
