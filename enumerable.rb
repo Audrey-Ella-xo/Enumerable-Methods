@@ -107,7 +107,7 @@ module Enumerable
     array3
   end
 
-  def my_inject(init = nil, arg = nil)
+  def my_my_inject(init = nil, arg = nil)
     result = self[0]
     if block_given?
       my_each_with_index do |element, i|
