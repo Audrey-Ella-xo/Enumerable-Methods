@@ -30,76 +30,40 @@ module Enumerable
     array2
   end
 
-  def my_all?(type = nil)
-    ary = []
-    has = {}
-    if block_given?
-        if self.is_a?(Array)
-            self.my_each { |n| yield(n) == true ? ary.push(true) : false }
-            self.length == ary.length ? (puts "true") : (puts "false")
-            ary
-        else
-            self.my_each { |k, v| yield(k, v) == true ? has[k] = v : (puts "hash") }
-            has
-        end
-    
-    elsif type != nil
-        self.my_each { |n| n.is_a?(type) ? ary.push(true) : false }
-        self.length == ary.length ? (puts "true") : (puts "false")
-    
-    else
-        self.my_each { |n| n != false && n != nil ? ary.push(true) : false }
-        self.length == ary.length ? (puts "true") : (puts "false")
+  def my_all
+    return true if !block_given?
+
+    i = 0
+    while i < size
+      return false if !yield(self[i])
+      i += 1
     end
+
+    return true
   end
 
-  def my_any?(type = nil)
-    ary = []
-    has = {}
-    if block_given?
-        if self.is_a?(Array)
-            self.my_each { |n| yield(n) == true ? ary.push(true) : false }
-            ary.length >= 1 ? (puts "true") : (puts "false")
-            ary
-        else
-            self.my_each { |k, v| yield(k, v) == true ? has[k] = v : false }
-            has.length >= 1 ? (puts "true") : (puts "false")
-            has
-        end
-    
-    elsif type != nil
-        self.my_each { |n| n.is_a?(type) ? ary.push(true) : false }
-        self.length == ary.length ? (puts "true") : (puts "false")
-    
-    else
-        self.my_each { |n| n != false && n != nil ? ary.push(true) : false }
-        ary.length >= 1 ? (puts "true") : (puts "false")
+  def my_any
+    return true if !block_given?
+
+    i = 0
+    while i < size
+      return true if yield(self[i])
+      i += 1
     end
+
+    return false
   end
 
-  def my_none?(type = nil)
-    ary = []
-    has = {}
-    if block_given?
-        if self.is_a?(Array)
-            self.my_each { |n| yield(n) == true ? ary.push(true) : false }
-            ary.length >= 1 ? (puts "false") : (puts "true")
-            ary
-        else
-            self.my_each { |k, v| yield(k, v) == true ? has[k] = v : false }
-            has.length >= 1 ? (puts "false") : (puts "true")
-            has
-        end
-    
-    elsif type != nil
-        self.my_each { |n| n.is_a?(type) ? ary.push(true) : false }
-        self.length == ary.length ? (puts "false") : (puts "true")
-    
-    else
-        self.my_each { |n| n != false && n != nil ? ary.push(true) : false }
-        ary == nil ? (puts "true") : (puts "false")
-        ary
+  def my_none
+    return true if !block_given?
+
+    i = 0
+    while i < size
+      return false if yield(self[i])
+      i += 1
     end
+
+    return true
   end
 
   def my_count(arg = '')
@@ -140,42 +104,25 @@ module Enumerable
     array3
   end
 
-  def my_inject(val = nil, sym = nil)
-    result = self[0]
-    if val.is_a?(String) || val.is_a?(Symbol)
-        sym = val
-        val = nil
-    end
-    if val.is_a?(Integer)
-        result = val
-    end
-    if sym.nil?
-        if block_given?
-            if val == nil
-                drop(1).my_each { |i| result = yield(result, i) }
-            else
-                result = val
-                my_each { |i| result = yield(result, i) }
-            end
-        end
+  def my_inject(x = nil)
+    return nil if !block_given?
+
+    if !x.nil?
+      result = x
+      i = 0
     else
-        if sym == :* || sym == :/
-            if val == nil
-                drop(1).my_each { |i| result = result.send(sym, i) }
-            else
-                result = val
-                my_each { |i| result = result.send(sym, i) }     
-            end
-        else
-            if val != nil
-                my_each { |i| result = result.send(sym, i) }
-            else
-                drop(1).my_each { |i| result = result.send(sym, i) }
-            end
-        end
+      result = self[0]
+      i = 1
     end
+
+    while i < size
+      result = yield(result, self[i])
+      i += 1
+    end
+
     return result
   end
+
 
 end
 # rubocop:enable all
